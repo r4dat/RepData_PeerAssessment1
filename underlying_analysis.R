@@ -43,3 +43,6 @@ sum(as.numeric(is.na(act[,"steps"])))
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
+act=mutate(act,wdy = wday(act$datetime))
+act=mutate(act,wkendBool = as.numeric(grepl(pattern = "1|7",x = act$wdy)))
+group_weekend = group_by(act,wkendBool)
