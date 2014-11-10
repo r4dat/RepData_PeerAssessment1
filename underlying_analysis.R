@@ -15,9 +15,9 @@ act$interval=str_pad(string = act$interval,width = 4,side = "left",pad = 0)
 act = mutate(.data = act,datetime=ymd_hm(paste(act$date,act$interval)))
 group_date = group_by(act,date)
 sum_date = summarize(group_date,tot_steps=sum(steps,na.rm = FALSE))
-ggplot(sum_date, aes(x=tot_steps))+geom_histogram(colour="white")+
-  ylab("Frequency Count")+xlab("Total Steps Per Day")+
-  ggtitle("Frequency of Occurence by Count of Steps")
+ggplot(sum_date, aes(date,tot_steps))+geom_histogram(colour="white",stat="identity")+
+  ylab("Total Steps Per Day")+xlab("Date")+
+  ggtitle("Count of steps by Date")
 
 ## What is mean total number of steps taken per day?
 summary(sum_date$tot_steps)
