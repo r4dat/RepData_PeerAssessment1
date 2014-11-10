@@ -4,14 +4,41 @@ output:
   html_document:
     keep_md: true
 ---
+  
+
+## Loading and preprocessing the data
+```{r,echo=TRUE}
+# Load required libraries
+library(lubridate)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
+act = read.csv(file = unzip("activity.zip"),header = TRUE,stringsAsFactors=FALSE)
 
+## Pad "interval" into mil-time format. 
+act$interval=str_pad(string = act$interval,width = 4,side = "left",pad = 0)
+
+## Create combined date-time column and parse with lubridate.
+act = mutate(.data = act,datetime=ymd_hm(paste(act$date,act$interval)))
+```
+
+## Histogram of total number of steps taken each day:
+```{r,echo=TRUE}
+group_date = group_by(act,date)
+sum_date = summarize(group_date,tot_steps=sum(steps,na.rm = FALSE))
+ggplot(sum_date, aes(ymd(date),tot_steps))+geom_histogram(colour="white",stat="identity")+ ylab("Total Steps Per Day")+xlab("Date")+
+  ggtitle("Count of steps by Date")
+```
 
 
 ## What is mean total number of steps taken per day?
-
+```{r,echo=TRUE}
+summary(sum_date$tot_steps)
+```
 
 
 ## What is the average daily activity pattern?
