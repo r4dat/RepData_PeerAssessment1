@@ -30,8 +30,8 @@ act = mutate(.data = act,datetime=ymd_hm(paste(act$date,act$interval)))
 ```{r,echo=TRUE}
 group_date = group_by(act,date)
 sum_date = summarize(group_date,tot_steps=sum(steps,na.rm = FALSE))
-ggplot(sum_date, aes(ymd(date),tot_steps))+geom_histogram(colour="white",stat="identity")+ ylab("Total Steps Per Day")+xlab("Date")+
-  ggtitle("Count of steps by Date")
+ggplot(sum_date,aes(sum_date$tot_steps))+geom_histogram(colour="white")+ ylab("Frequency")+xlab("Total Steps Per Day")+
+  ggtitle("Freq. of Total Steps Per Day")
 ```
 
 
