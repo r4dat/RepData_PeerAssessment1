@@ -12,45 +12,11 @@ output:
 # Load required libraries
 library(lubridate)
 library(plyr)
-```
-
-```
-## 
-## Attaching package: 'plyr'
-## 
-## The following object is masked from 'package:lubridate':
-## 
-##     here
-```
-
-```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following objects are masked from 'package:plyr':
-## 
-##     arrange, desc, failwith, id, mutate, summarise, summarize
-## 
-## The following objects are masked from 'package:lubridate':
-## 
-##     intersect, setdiff, union
-## 
-## The following objects are masked from 'package:stats':
-## 
-##     filter, lag
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(stringr)
 library(ggplot2)
+library(grid)
+library(gridExtra)
 # Reproducible Research: Peer Assessment 1
 
 
@@ -211,28 +177,28 @@ act$daytype = factor(isWeekend, levels = c(FALSE, TRUE), labels = c("weekday", "
 
 group_time = act %>% filter(daytype=='weekday') %>% group_by(interval)
 sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
-par(mfrow = c(2, 1))
 
-ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
+
+p1 = ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
   geom_line()+ylab("Average Steps Taken")+xlab("Interval")+
   scale_x_continuous(breaks=seq(from = 0,to = 2400,by = 300)) + 
   ggtitle("Weekday - Mean steps per 5 minutes")
-```
+  
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
-
-```r
 # Weekends 
 
 group_time = act %>% filter(daytype=='weekend') %>% group_by(interval)
 sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
 
 
-ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
+p2 = ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
   geom_line()+ylab("Average Steps Taken")+xlab("Interval")+
   scale_x_continuous(breaks=seq(from = 0,to = 2400,by = 300)) + 
   ggtitle("Weekend - Mean steps per 5 minutes")
+  
+
+grid.arrange(p1, p2, ncol = 2, main = "Weekend Vs Weekday")
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-2.png) 
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
 
