@@ -10,6 +10,7 @@ output:
 ```{r,echo=TRUE}
 # Load required libraries
 library(lubridate)
+library(plyr)
 library(dplyr)
 library(stringr)
 library(ggplot2)
@@ -35,18 +36,98 @@ ggplot(sum_date,aes(sum_date$tot_steps))+geom_histogram(colour="white")+ ylab("F
 ```
 
 
-## What is mean total number of steps taken per day?
+## What is the mean and median total number of steps taken per day?
 ```{r,echo=TRUE}
-summary(sum_date$tot_steps)
+mean(sum_date$tot_steps,na.rm = TRUE)
+median(sum_date$tot_steps,na.rm=TRUE)
 ```
 
 
 ## What is the average daily activity pattern?
+```{r,echo=TRUE}
+## Summarize for averaging, remove NAs.
+group_time = group_by(act,interval)
+sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
 
+
+## What is the average daily activity pattern?
+## Plot time series.
+ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
+  geom_line()+ylab("Average Steps Taken")+xlab("Interval")+
+  scale_x_continuous(breaks=seq(from = 0,to = 2400,by = 300)) + 
+  ggtitle("Mean steps per 5 minutes")
+
+```
+
+## Which 5-minute interval, on average across all the days in the act, contains the maximum number of steps?
+
+```{r,echo=TRUE}
+## Highest Average steps @ interval:
+arrange(sum_time,desc(avg_steps))[1,])
+```
 
 
 ## Imputing missing values
+```{r,echo=TRUE}
+The total number of NAs is 2304, as demonstrated by 
+sum(is.na(act$steps)).
 
+Impute missing data by using the average of the time period.
 
+# Function that substitues NA values with the mean of non-NA values
+impute.mean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
+
+imputed = ddply(act, ~ interval, transform, steps = impute.mean(steps))
+
+```
+
+Show the histogram, mean, and median of the imputed act.
+
+```{r,echo=TRUE}
+imp_group_date = imputed %>% group_by(date)
+imp_sum_date = summarize(imp_group_date,tot_steps=sum(steps,na.rm = FALSE))
+ggplot(imp_sum_date,aes(imp_sum_date$tot_steps))+geom_histogram(colour="white")+ ylab("Frequency")+xlab("Total Steps Per Day")+
+  ggtitle("Freq. of Total Imputed Steps Per Day")
+
+mean(x = imp_sum_date$tot_steps)
+median(x=imp_sum_date$tot_steps)
+```
+
+Imputation appears to have had a negligible impact on visualization or summary statistics.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r,echo=TRU}
+# Use English locale
+Sys.setlocale("LC_TIME", "English")
+isWeekend = weekdays(as.Date(act$date)) %in% c("Saturday", "Sunday")
+act$daytype = factor(isWeekend, levels = c(FALSE, TRUE), labels = c("weekday", "weekend"))
+
+Panel plot containing a time series plot of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis):
+
+#par(mfrow = c(2, 1))
+# Weekdays
+
+group_time = act %>% filter(daytype=='weekday') %>% group_by(interval)
+sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
+
+
+ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
+  geom_line()+ylab("Average Steps Taken")+xlab("Interval")+
+  scale_x_continuous(breaks=seq(from = 0,to = 2400,by = 300)) + 
+  ggtitle("Weekday - Mean steps per 5 minutes")
+  
+
+# Weekends 
+
+group_time = act %>% filter(daytype=='weekend') %>% group_by(interval)
+sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
+
+
+ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
+  geom_line()+ylab("Average Steps Taken")+xlab("Interval")+
+  scale_x_continuous(breaks=seq(from = 0,to = 2400,by = 300)) + 
+  ggtitle("Weekend - Mean steps per 5 minutes")
+  
+```
+
