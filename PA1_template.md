@@ -197,7 +197,7 @@ p2 = ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
   ggtitle("Weekend - Mean steps per 5 minutes")
   
 
-grid.arrange(p1, p2, ncol = 2, main = "Weekend Vs Weekday")
+grid.arrange(p1, p2, nrow = 2, main = "Weekend Vs Weekday")
 ```
 
 ![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
