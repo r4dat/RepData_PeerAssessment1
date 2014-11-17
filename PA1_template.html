@@ -206,8 +206,40 @@ hr {
 <pre><code class="r"># Load required libraries
 library(lubridate)
 library(plyr)
-library(dplyr)
-library(stringr)
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;plyr&#39;
+## 
+## The following object is masked from &#39;package:lubridate&#39;:
+## 
+##     here
+</code></pre>
+
+<pre><code class="r">library(dplyr)
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;dplyr&#39;
+## 
+## The following objects are masked from &#39;package:plyr&#39;:
+## 
+##     arrange, desc, failwith, id, mutate, summarise, summarize
+## 
+## The following objects are masked from &#39;package:lubridate&#39;:
+## 
+##     intersect, setdiff, union
+## 
+## The following objects are masked from &#39;package:stats&#39;:
+## 
+##     filter, lag
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     intersect, setdiff, setequal, union
+</code></pre>
+
+<pre><code class="r">library(stringr)
 library(ggplot2)
 # Reproducible Research: Peer Assessment 1
 
@@ -341,7 +373,7 @@ act$daytype = factor(isWeekend, levels = c(FALSE, TRUE), labels = c(&quot;weekda
 
 group_time = act %&gt;% filter(daytype==&#39;weekday&#39;) %&gt;% group_by(interval)
 sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
-
+par(mfrow = c(2, 1))
 
 ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
   geom_line()+ylab(&quot;Average Steps Taken&quot;)+xlab(&quot;Interval&quot;)+

@@ -107,7 +107,7 @@ act$daytype = factor(isWeekend, levels = c(FALSE, TRUE), labels = c("weekday", "
 
 group_time = act %>% filter(daytype=='weekday') %>% group_by(interval)
 sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
-
+par(mfrow = c(2, 1))
 
 ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
   geom_line()+ylab("Average Steps Taken")+xlab("Interval")+

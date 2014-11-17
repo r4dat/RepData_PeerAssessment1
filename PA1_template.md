@@ -12,7 +12,43 @@ output:
 # Load required libraries
 library(lubridate)
 library(plyr)
+```
+
+```
+## 
+## Attaching package: 'plyr'
+## 
+## The following object is masked from 'package:lubridate':
+## 
+##     here
+```
+
+```r
 library(dplyr)
+```
+
+```
+## 
+## Attaching package: 'dplyr'
+## 
+## The following objects are masked from 'package:plyr':
+## 
+##     arrange, desc, failwith, id, mutate, summarise, summarize
+## 
+## The following objects are masked from 'package:lubridate':
+## 
+##     intersect, setdiff, union
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+```r
 library(stringr)
 library(ggplot2)
 # Reproducible Research: Peer Assessment 1
@@ -175,7 +211,7 @@ act$daytype = factor(isWeekend, levels = c(FALSE, TRUE), labels = c("weekday", "
 
 group_time = act %>% filter(daytype=='weekday') %>% group_by(interval)
 sum_time = summarize(group_time,avg_steps=mean(steps,na.rm = TRUE))
-
+par(mfrow = c(2, 1))
 
 ggplot(data = sum_time,aes(x=as.numeric(interval),y=avg_steps,group=1))+
   geom_line()+ylab("Average Steps Taken")+xlab("Interval")+
